@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KineTrivia - La Casa del Kine</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kine: {
+                            magenta: '#E6007A',
+                            burgundy: '#8C0A4B',
+                            dark: '#2C2C2C',
+                            slateText: '#333333',
+                            lightBg: '#FAF6F8',
+                            cardBg: '#FFFFFF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FAF6F8;
+            color: #2C2C2C;
+        }
+        .kine-card {
+            background: #FFFFFF;
+            border: 1px solid #F0E6EC;
+            box-shadow: 0 4px 20px -2px rgba(140, 10, 75, 0.06);
+        }
+        .btn-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -6px rgba(230, 0, 122, 0.2);
+        }
+        .btn-hover:active {
+            transform: translateY(0);
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 sm:p-6 select-none">
+
+    <!-- Header / Navbar Top -->
+    <header class="w-full max-w-4xl mx-auto flex items-center justify-between py-3 px-5 kine-card rounded-2xl mb-6 shadow-sm">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="goToHome()">
+            <div class="bg-gradient-to-tr from-[#8C0A4B] to-[#E6007A] p-2.5 rounded-xl text-white shadow-md">
+                <i class="fa-solid fa-house-medical text-xl sm:text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-black tracking-tight text-[#2C2C2C] flex items-center gap-1">
+                    La Casa del <span class="text-[#E6007A]">Kine</span>
+                </h1>
+                <p class="text-xs text-slate-500 font-medium hidden sm:block">Juego de Preguntas & Trivia</p>
+            </div>
+        </div>
+        <button id="btnHomeHeader" onclick="goToHome()" class="hidden flex items-center space-x-2 bg-pink-50 hover:bg-pink-100 text-[#8C0A4B] px-4 py-2 rounded-xl text-sm font-semibold transition border border-pink-200">
+            <i class="fa-solid fa-house text-[#E6007A]"></i>
+            <span class="hidden sm:inline">Volver al inicio</span>
+        </button>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="w-full max-w-4xl mx-auto flex-1 flex flex-col justify-center items-center">
+
+        <!-- 1. Pantalla de Selección de Categoría -->
+        <section id="screenHome" class="w-full py-4 text-center flex flex-col items-center">
+            <div class="inline-block p-4 rounded-full bg-[#E6007A]/10 text-[#E6007A] mb-4 border border-[#E6007A]/20 animate-pulse-slow">
+                <i class="fa-solid fa-brain text-4xl sm:text-5xl"></i>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-[#2C2C2C] mb-3 tracking-tight">
+                ¡Poné a prueba tus conocimientos!
+            </h2>
+            <p class="text-slate-600 max-w-lg mb-8 text-sm sm:text-base">
+                Seleccioná tu nivel para empezar la trivia interactiva de Kinesiología y Anatomía.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl px-2">
+                <!-- Tarjeta Estudiantes -->
+                <button onclick="startGame('estudiantes')" class="kine-card btn-hover p-6 sm:p-8 rounded-3xl text-left border-2 border-slate-200 hover:border-[#E6007A] group relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute -right-6 -bottom-6 text-[#E6007A]/10 group-hover:text-[#E6007A]/20 transition text-9xl pointer-events-none">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#E6007A]/15 text-[#E6007A] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <span class="bg-[#E6007A]/15 text-[#E6007A] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Nivel Inicial</span>
+                        <h3 class="text-2xl font-bold text-[#2C2C2C] mt-2 group-hover:text-[#E6007A] transition">Estudiantes</h3>
+                        <p class="text-slate-600 text-sm mt-2">5 Preguntas esenciales sobre conceptos fundamentales de anatomía y kinesiología básica.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-[#E6007A] font-semibold text-sm">
+                        <span>Iniciar Trivia</span>
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                    </div>
+                </button>
+
+                <!-- Tarjeta Profesionales -->
+                <button onclick="startGame('profesionales')" class="kine-card btn-hover p-6 sm:p-8 rounded-3xl text-left border-2 border-slate-200 hover:border-[#8C0A4B] group relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute -right-6 -bottom-6 text-[#8C0A4B]/10 group-hover:text-[#8C0A4B]/20 transition text-9xl pointer-events-none">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#8C0A4B]/15 text-[#8C0A4B] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-user-md"></i>
+                        </div>
+                        <span class="bg-[#8C0A4B]/15 text-[#8C0A4B] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Nivel Avanzado</span>
+                        <h3 class="text-2xl font-bold text-[#2C2C2C] mt-2 group-hover:text-[#8C0A4B] transition">Profesionales</h3>
+                        <p class="text-slate-600 text-sm mt-2">10 Preguntas avanzadas: Biomecánica, Neurorehabilitación, Fisiología y Agentes Físicos.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-[#8C0A4B] font-semibold text-sm">
+                        <span>Iniciar Desafío</span>
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- 2. Pantalla de Juego / Preguntas -->
+        <section id="screenQuiz" class="hidden w-full max-w-3xl kine-card rounded-3xl p-5 sm:p-8 shadow-lg relative">
+            
+            <!-- Barra Superior de Información y Progreso -->
+            <div class="flex flex-col gap-3 mb-6">
+                <div class="flex items-center justify-between text-xs sm:text-sm font-semibold">
+                    <span id="badgeCategory" class="px-3 py-1 rounded-full bg-[#E6007A]/10 text-[#E6007A] border border-[#E6007A]/20 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span id="textCategory">Categoría</span>
+                    </span>
+                    <span id="textProgress" class="text-slate-500 font-mono">Pregunta 1 de 5</span>
+                </div>
+                <!-- Barra de progreso visual -->
+                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200">
+                    <div id="progressBar" class="bg-gradient-to-r from-[#8C0A4B] to-[#E6007A] h-full rounded-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <!-- Etiqueta de Subdisciplina (si aplica) -->
+            <div id="badgeSubtopicContainer" class="mb-3 hidden">
+                <span id="badgeSubtopic" class="text-xs font-bold px-3 py-1 rounded-md bg-purple-500/10 text-purple-900 border border-purple-500/20 uppercase tracking-wider">
+                    Anatomía
+                </span>
+            </div>
+
+            <!-- Pregunta -->
+            <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-[#2C2C2C] mb-6 leading-relaxed">
+                ¿Texto de la pregunta aquí?
+            </h3>
+
+            <!-- Opciones A, B, C -->
+            <div id="optionsContainer" class="space-y-3.5 mb-6">
+                <!-- Se generan por Javascript -->
+            </div>
+
+            <!-- Explicación / Feedback adicional -->
+            <div id="explanationContainer" class="hidden mb-6 p-4 rounded-2xl bg-pink-50/60 border border-pink-200 text-slate-700 text-sm leading-relaxed transition-all">
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-circle-info text-[#E6007A] text-lg mt-0.5"></i>
+                    <div>
+                        <span class="font-bold text-[#8C0A4B] block mb-1">Nota explicativa:</span>
+                        <p id="explanationText" class="text-slate-600"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Siguiente -->
+            <div class="flex justify-end">
+                <button id="btnNext" onclick="nextQuestion()" disabled class="bg-gradient-to-r from-[#8C0A4B] to-[#E6007A] hover:from-[#70083B] hover:to-[#C70068] text-white font-bold py-3.5 px-8 rounded-2xl transition-all shadow-md opacity-50 cursor-not-allowed flex items-center gap-2">
+                    <span>Siguiente</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. Pantalla de Resultados -->
+        <section id="screenResults" class="hidden w-full max-w-xl kine-card rounded-3xl p-6 sm:p-10 text-center shadow-xl relative">
+            <div class="inline-flex p-4 rounded-full bg-pink-100 text-[#E6007A] mb-4 border border-pink-200">
+                <i class="fa-solid fa-trophy text-5xl"></i>
+            </div>
+            
+            <h2 class="text-3xl font-extrabold text-[#2C2C2C] mb-1">¡Desafío completado!</h2>
+            <p id="resultSubtitle" class="text-slate-500 text-sm mb-6">Has completado la trivia con éxito</p>
+
+            <!-- Score Display -->
+            <div class="bg-pink-50/50 rounded-2xl p-6 mb-6 border border-pink-100">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Puntaje Final</span>
+                <div class="flex items-center justify-center font-black">
+                    <span id="finalScore" class="text-5xl sm:text-6xl text-[#E6007A] font-mono">0</span>
+                    <span id="totalQuestions" class="text-3xl sm:text-4xl text-slate-400 font-mono">/0</span>
+                </div>
+                <p id="scoreMessage" class="mt-3 text-sm font-semibold text-[#2C2C2C]">¡Excelente desempeño!</p>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="restartCurrentCategory()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-5 rounded-2xl transition border border-slate-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right text-[#E6007A]"></i>
+                    <span>Jugar de nuevo</span>
+                </button>
+                <button onclick="goToHome()" class="flex-1 bg-gradient-to-r from-[#8C0A4B] to-[#E6007A] hover:from-[#70083B] hover:to-[#C70068] text-white font-semibold py-3.5 px-5 rounded-2xl transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Cambiar Nivel</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-4xl mx-auto text-center py-4 text-xs text-slate-500 font-medium">
+        La Casa del Kine &copy; 2026 - Trivia Interactiva de Kinesiología y Anatomía
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Bancos de Preguntas (Exactamente iguales)
+        const questionBank = {
+            estudiantes: [
+                {
+                    id: 1,
+                    question: "¿Cuál es el hueso más largo del cuerpo humano?",
+                    options: [
+                        { letter: "A", text: "Húmero" },
+                        { letter: "B", text: "Fémur" },
+                        { letter: "C", text: "Tibia" }
+                    ],
+                    correct: "B",
+                    explanation: "El fémur es el hueso del muslo, siendo el más largo, fuerte y pesado del cuerpo humano."
+                },
+                {
+                    id: 2,
+                    question: "¿Qué músculo trabaja principalmente al flexionar el codo?",
+                    options: [
+                        { letter: "A", text: "Bíceps braquial" },
+                        { letter: "B", text: "Tríceps braquial" },
+                        { letter: "C", text: "Glúteo mayor" }
+                    ],
+                    correct: "A",
+                    explanation: "El bíceps braquial es el agonista principal en la flexión del codo junto con el braquial anterior."
+                },
+                {
+                    id: 3,
+                    question: "¿Qué articulación conecta el fémur con la tibia?",
+                    options: [
+                        { letter: "A", text: "Cadera" },
+                        { letter: "B", text: "Rodilla" },
+                        { letter: "C", text: "Tobillo" }
+                    ],
+                    correct: "B",
+                    explanation: "La articulación de la rodilla une la porción distal del fémur con la porción proximal de la tibia."
+                },
+                {
+                    id: 4,
+                    question: "¿Cuál es el principal músculo de la respiración?",
+                    options: [
+                        { letter: "A", text: "Diafragma" },
+                        { letter: "B", text: "Bíceps" },
+                        { letter: "C", text: "Trapecio" }
+                    ],
+                    correct: "A",
+                    explanation: "El diafragma es un músculo domiforme esencial que separa la cavidad torácica de la abdominal y permite la inspiración."
+                },
+                {
+                    id: 5,
+                    question: "¿Cuál es uno de los objetivos principales de la kinesiología?",
+                    options: [
+                        { letter: "A", text: "Mejorar el movimiento y la funcionalidad" },
+                        { letter: "B", text: "Reemplazar todos los tratamientos médicos" },
+                        { letter: "C", text: "Evitar cualquier tipo de actividad física" }
+                    ],
+                    correct: "A",
+                    explanation: "La kinesiología busca restablecer, optimizar y mantener el movimiento corporal humano y la calidad de vida."
+                }
+            ],
+            profesionales: [
+                {
+                    id: 1,
+                    subtopic: "Anatomía",
+                    question: "¿Qué músculo suele estar relacionado con el síndrome de dolor patelofemoral por su función en el control de la rótula?",
+                    options: [
+                        { letter: "A", text: "Vasto medial" },
+                        { letter: "B", text: "Bíceps braquial" },
+                        { letter: "C", text: "Tibial anterior" }
+                    ],
+                    correct: "A",
+                    explanation: "El vasto medial (especialmente sus fibras oblicuas VMO) contribuye al correcto alineamiento patelar, aunque el síndrome es de origen multifactorial."
+                },
+                {
+                    id: 2,
+                    subtopic: "Biomecánica",
+                    question: "Cuando una persona camina, ¿qué fase corresponde al momento en que el pie está en contacto con el suelo?",
+                    options: [
+                        { letter: "A", text: "Fase de balanceo" },
+                        { letter: "B", text: "Fase de apoyo" },
+                        { letter: "C", text: "Fase de vuelo" }
+                    ],
+                    correct: "B",
+                    explanation: "La fase de apoyo (stance phase) comprende aproximadamente el 60% del ciclo de la marcha normal."
+                },
+                {
+                    id: 3,
+                    subtopic: "Evaluación",
+                    question: "¿Para qué sirve principalmente evaluar el rango de movimiento de una articulación?",
+                    options: [
+                        { letter: "A", text: "Para conocer cuánto puede moverse" },
+                        { letter: "B", text: "Para medir la frecuencia cardíaca" },
+                        { letter: "C", text: "Para calcular la masa muscular" }
+                    ],
+                    correct: "A",
+                    explanation: "Evaluar la goniometría / rango articular (ROM) mide los grados de movimiento pasivo y activo de una articulación."
+                },
+                {
+                    id: 4,
+                    subtopic: "Neurorehabilitación",
+                    question: "¿Qué estructura del sistema nervioso participa principalmente en la coordinación y precisión de los movimientos?",
+                    options: [
+                        { letter: "A", text: "Cerebelo" },
+                        { letter: "B", text: "Médula ósea" },
+                        { letter: "C", text: "Pleura" }
+                    ],
+                    correct: "A",
+                    explanation: "El cerebelo procesa la información de la corteza motora y receptores propioceptivos para afinar la marcha, equilibrio y tono muscular."
+                },
+                {
+                    id: 5,
+                    subtopic: "Fisiología",
+                    question: "Durante un ejercicio aeróbico sostenido, como caminar a paso rápido, ¿qué sistema energético tiene un papel predominante?",
+                    options: [
+                        { letter: "A", text: "Sistema oxidativo" },
+                        { letter: "B", text: "Sistema de fosfágenos exclusivamente" },
+                        { letter: "C", text: "Sistema anaeróbico exclusivamente" }
+                    ],
+                    correct: "A",
+                    explanation: "El sistema oxidativo o aeróbico sintetiza ATP de manera continua en las mitocondrias durante actividades de baja/moderada intensidad y mayor duración."
+                },
+                {
+                    id: 6,
+                    subtopic: "Agentes físicos",
+                    question: "¿Qué efecto produce habitualmente la aplicación de frío sobre la velocidad de conducción nerviosa periférica?",
+                    options: [
+                        { letter: "A", text: "La aumenta" },
+                        { letter: "B", text: "La disminuye" },
+                        { letter: "C", text: "No produce ningún cambio" }
+                    ],
+                    correct: "B",
+                    explanation: "La crioterapia ralentiza la velocidad de conducción nerviosa periférica, lo cual eleva el umbral del dolor y reduce la transmisión nociceptiva."
+                },
+                {
+                    id: 7,
+                    subtopic: "Fisiología muscular",
+                    question: "¿Qué tipo de contracción muscular ocurre cuando el músculo genera tensión mientras se alarga?",
+                    options: [
+                        { letter: "A", text: "Concéntrica" },
+                        { letter: "B", text: "Excéntrica" },
+                        { letter: "C", text: "Isométrica" }
+                    ],
+                    correct: "B",
+                    explanation: "En la contracción excéntrica, el músculo ejerce fuerza resistiendo una carga mientras sus extremos se separan."
+                },
+                {
+                    id: 8,
+                    subtopic: "Anatomía funcional",
+                    question: "¿Qué movimiento realiza principalmente el glúteo mayor cuando una persona se incorpora desde una silla?",
+                    options: [
+                        { letter: "A", text: "Extensión de cadera" },
+                        { letter: "B", text: "Flexión de codo" },
+                        { letter: "C", text: "Flexión plantar del tobillo" }
+                    ],
+                    correct: "A",
+                    explanation: "El glúteo mayor es el extensor principal de la cadera al levantarse de una posición sedentaria."
+                },
+                {
+                    id: 9,
+                    subtopic: "Evaluación funcional",
+                    question: "¿Qué se busca observar principalmente con una prueba de equilibrio unipodal?",
+                    options: [
+                        { letter: "A", text: "El control postural sobre una sola pierna" },
+                        { letter: "B", text: "La fuerza de prensión manual" },
+                        { letter: "C", text: "La capacidad pulmonar máxima" }
+                    ],
+                    correct: "A",
+                    explanation: "El test de apoyo monopodal evalúa el control postural, estabilidad neuromuscular y riesgo de caídas."
+                },
+                {
+                    id: 10,
+                    subtopic: "Rehabilitación",
+                    question: "En una rehabilitación, ¿por qué es importante progresar gradualmente la carga de ejercicio?",
+                    options: [
+                        { letter: "A", text: "Para adaptar el esfuerzo a la capacidad y evolución de la persona" },
+                        { letter: "B", text: "Para evitar que el paciente vuelva a moverse" },
+                        { letter: "C", text: "Para trabajar siempre con la máxima intensidad" }
+                    ],
+                    correct: "A",
+                    explanation: "El principio de sobrecarga progresiva adaptada minimiza el riesgo de recaída y estimula las remodelaciones tisulares de forma segura."
+                }
+            ]
+        };
+
+        // Estado del juego
+        let currentCategoryKey = 'estudiantes';
+        let questions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        // Elementos DOM
+        const screenHome = document.getElementById('screenHome');
+        const screenQuiz = document.getElementById('screenQuiz');
+        const screenResults = document.getElementById('screenResults');
+        const btnHomeHeader = document.getElementById('btnHomeHeader');
+
+        const badgeCategory = document.getElementById('badgeCategory');
+        const textCategory = document.getElementById('textCategory');
+        const textProgress = document.getElementById('textProgress');
+        const progressBar = document.getElementById('progressBar');
+        const badgeSubtopicContainer = document.getElementById('badgeSubtopicContainer');
+        const badgeSubtopic = document.getElementById('badgeSubtopic');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const explanationContainer = document.getElementById('explanationContainer');
+        const explanationText = document.getElementById('explanationText');
+        const btnNext = document.getElementById('btnNext');
+
+        const finalScore = document.getElementById('finalScore');
+        const totalQuestions = document.getElementById('totalQuestions');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const resultSubtitle = document.getElementById('resultSubtitle');
+
+        // Función Fisher-Yates para barajar preguntas
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Navegación
+        function goToHome() {
+            screenHome.classList.remove('hidden');
+            screenQuiz.classList.add('hidden');
+            screenResults.classList.add('hidden');
+            btnHomeHeader.classList.add('hidden');
+        }
+
+        function startGame(categoryKey) {
+            currentCategoryKey = categoryKey;
+            questions = shuffle(questionBank[categoryKey]);
+            currentIndex = 0;
+            score = 0;
+
+            screenHome.classList.add('hidden');
+            screenResults.classList.add('hidden');
+            screenQuiz.classList.remove('hidden');
+            btnHomeHeader.classList.remove('hidden');
+
+            if (categoryKey === 'estudiantes') {
+                textCategory.textContent = "Estudiantes";
+                badgeCategory.className = "px-3 py-1 rounded-full bg-[#E6007A]/15 text-[#E6007A] border border-[#E6007A]/30 flex items-center gap-2 font-semibold";
+            } else {
+                textCategory.textContent = "Profesionales";
+                badgeCategory.className = "px-3 py-1 rounded-full bg-[#8C0A4B]/15 text-[#8C0A4B] border border-[#8C0A4B]/30 flex items-center gap-2 font-semibold";
+            }
+
+            renderQuestion();
+        }
+
+        function restartCurrentCategory() {
+            startGame(currentCategoryKey);
+        }
+
+        // Renderizado de preguntas
+        function renderQuestion() {
+            selectedAnswer = null;
+            const q = questions[currentIndex];
+
+            textProgress.textContent = `Pregunta ${currentIndex + 1} de ${questions.length}`;
+            const percentage = ((currentIndex) / questions.length) * 100;
+            progressBar.style.width = `${percentage}%`;
+
+            if (q.subtopic) {
+                badgeSubtopic.textContent = q.subtopic;
+                badgeSubtopicContainer.classList.remove('hidden');
+            } else {
+                badgeSubtopicContainer.classList.add('hidden');
+            }
+
+            questionText.textContent = q.question;
+
+            explanationContainer.classList.add('hidden');
+            explanationText.textContent = '';
+            btnNext.disabled = true;
+            btnNext.classList.add('opacity-50', 'cursor-not-allowed');
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach(opt => {
+                const button = document.createElement('button');
+                button.setAttribute('id', `opt-${opt.letter}`);
+                button.onclick = () => selectOption(opt.letter);
+                button.className = `w-full text-left p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-[#E6007A] transition-all flex items-center justify-between group cursor-pointer shadow-sm`;
+
+                button.innerHTML = `
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 font-bold flex items-center justify-center text-sm border border-slate-200 group-hover:border-[#E6007A] group-hover:text-[#E6007A] transition">
+                            ${opt.letter}
+                        </span>
+                        <span class="text-[#2C2C2C] font-medium text-sm sm:text-base">${opt.text}</span>
+                    </div>
+                    <div class="status-icon text-xl"></div>
+                `;
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Manejo de opción seleccionada
+        function selectOption(letter) {
+            if (selectedAnswer !== null) return;
+            selectedAnswer = letter;
+
+            const q = questions[currentIndex];
+            const isCorrect = (letter === q.correct);
+
+            if (isCorrect) {
+                score++;
+            }
+
+            q.options.forEach(opt => {
+                const btn = document.getElementById(`opt-${opt.letter}`);
+                btn.classList.remove('hover:border-[#E6007A]');
+                btn.onclick = null;
+
+                const iconContainer = btn.querySelector('.status-icon');
+
+                if (opt.letter === q.correct) {
+                    // Verde estándar para acierto/opción correcta
+                    btn.className = `w-full text-left p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-500 text-emerald-950 flex items-center justify-between shadow-md font-semibold`;
+                    iconContainer.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+                } else if (opt.letter === letter && !isCorrect) {
+                    // Rojo estándar para error
+                    btn.className = `w-full text-left p-4 rounded-2xl bg-rose-50 border-2 border-rose-500 text-rose-950 flex items-center justify-between shadow-md`;
+                    iconContainer.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i>`;
+                } else {
+                    // Opción secundaria atenuada
+                    btn.className = `w-full text-left p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-slate-400 opacity-60 flex items-center justify-between`;
+                }
+            });
+
+            if (q.explanation) {
+                explanationText.textContent = q.explanation;
+                explanationContainer.classList.remove('hidden');
+            }
+
+            btnNext.disabled = false;
+            btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
+            btnNext.classList.add('hover:scale-105');
+        }
+
+        function nextQuestion() {
+            if (selectedAnswer === null) return;
+
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            screenQuiz.classList.add('hidden');
+            screenResults.classList.remove('hidden');
+
+            progressBar.style.width = '100%';
+
+            finalScore.textContent = score;
+            totalQuestions.textContent = `/${questions.length}`;
+
+            const pct = (score / questions.length) * 100;
+
+            if (pct === 100) {
+                scoreMessage.textContent = "¡Excelente! Perfección total en tus respuestas. 🏆";
+                resultSubtitle.textContent = "¡Demostraste un dominio completo de la materia!";
+            } else if (pct >= 70) {
+                scoreMessage.textContent = "¡Muy buen trabajo! Tienes un sólido conocimiento. 👏";
+                resultSubtitle.textContent = "¡Estás en un nivel de conocimiento destacado!";
+            } else if (pct >= 50) {
+                scoreMessage.textContent = "¡Buen intento! Buen desempeño pero se puede mejorar. 👍";
+                resultSubtitle.textContent = "Sigue repasando para alcanzar la puntuación perfecta.";
+            } else {
+                scoreMessage.textContent = "¡Sigue repasando! La práctica hace al maestro. 📚";
+                resultSubtitle.textContent = "Te recomendamos revisar los temas e intentarlo nuevamente.";
+            }
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#E6007A', '#8C0A4B', '#2C2C2C', '#10B981']
+                });
+            }
+        }
+    </script>
+</body>
+</html>
